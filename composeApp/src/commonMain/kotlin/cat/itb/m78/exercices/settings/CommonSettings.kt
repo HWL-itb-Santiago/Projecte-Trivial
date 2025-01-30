@@ -6,6 +6,16 @@ import androidx.lifecycle.ViewModel
 
 class CommonSettings : ViewModel()
 {
-    var difficultyLevel =  { mutableStateOf(0)}
-    var numberOfRounds = { mutableStateOf(0)}
+    val difficultyLevel =  mutableStateOf(2)
+    var numberOfRounds = mutableStateOf(0)
+
+    fun changeDifficulty(newDifficulty : Int)
+    {
+        difficultyLevel.value = newDifficulty
+    }
+
+    fun changeNumberOfRounds(newRoundNumber : Int)
+    {
+        numberOfRounds.value = newRoundNumber
+    }
 }

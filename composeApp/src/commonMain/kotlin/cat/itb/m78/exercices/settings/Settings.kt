@@ -43,7 +43,6 @@ import kotlin.math.roundToInt
 fun ScreenSettings(changeScreenToMenu: () -> Unit)
 {
     val settingsVieModel = viewModel{CommonSettings()}
-    var difficultyLevel by remember { mutableStateOf("")}
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
@@ -65,7 +64,14 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit)
                 shape = RectangleShape
             )
             {
-                Text(difficultyLevel)
+                val mode = when (settingsVieModel.difficultyLevel.value)
+                {
+                    1 -> "Easy"
+                    2 -> "Normal"
+                    3 -> "Hard"
+                    else -> {}
+                }
+                Text("$mode")
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "More options")
                 DropdownMenu(
                     expanded = expanded,
@@ -74,21 +80,21 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit)
                     DropdownMenuItem(
                         text = { Text("Easy") },
                         onClick = {
-                            difficultyLevel = "Easy"
+                            settingsVieModel.changeDifficulty(1)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Normal") },
                         onClick = {
-                            difficultyLevel = "Normal"
+                            settingsVieModel.changeDifficulty(2)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Hard") },
                         onClick = {
-                            difficultyLevel = "Hard"
+                            settingsVieModel.changeDifficulty(3)
                             expanded = false
                         }
                     )
