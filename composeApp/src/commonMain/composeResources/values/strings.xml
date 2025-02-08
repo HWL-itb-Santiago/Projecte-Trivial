@@ -1,3 +1,58 @@
 <resources>
-    <string name="app_name">Exercicis DAMv78</string>
+    <!-- Preguntas fáciles -->
+    <string-array name="questions_easy">
+        <item>¿Cuántos lados tiene un triángulo?</item>
+        <item>¿Cuál es el color del sol?</item>
+        <item>¿Cuántos continentes hay en el mundo?</item>
+        <item>¿En qué continente se encuentra Brasil?</item>
+        <item>¿Qué animal es conocido como el rey de la selva?</item>
+        <item>¿De qué color es la fresa?</item>
+        <item>¿En qué estación del año cae Navidad?</item>
+        <item>¿Qué es más grande, un elefante o una hormiga?</item>
+        <item>¿Cuántos días tiene una semana?</item>
+        <item>¿Cuál es el planeta más cercano al sol?</item>
+        <item>¿De qué color es el cielo en un día despejado?</item>
+        <item>¿Cuál es el nombre del presidente de los Estados Unidos (2021)?</item>
+        <item>¿Cuántas patas tiene una araña?</item>
+        <item>¿En qué país nació Pablo Picasso?</item>
+        <item>¿Cómo se llama la famosa torre de París?</item>
+    </string-array>
+
+    <!-- Preguntas normales -->
+    <string-array name="questions_normal">
+        <item>¿En qué año llegó el hombre a la Luna?</item>
+        <item>¿Qué elemento químico tiene el símbolo O?</item>
+        <item>¿Cuál es el océano más grande?</item>
+        <item>¿Cómo se llama la capital de Japón?</item>
+        <item>¿Quién escribió "Don Quijote de la Mancha"?</item>
+        <item>¿Cuál es el río más largo del mundo?</item>
+        <item>¿Qué continente tiene la mayor población?</item>
+        <item>¿Cuántos segundos hay en una hora?</item>
+        <item>¿Cuál es el animal terrestre más grande?</item>
+        <item>¿Quién pintó la "Mona Lisa"?</item>
+        <item>¿En qué país se encuentra la Torre Eiffel?</item>
+        <item>¿Cuál es el número atómico del carbono?</item>
+        <item>¿Qué planeta tiene anillos visibles desde la Tierra?</item>
+        <item>¿Cuál es la capital de Australia?</item>
+        <item>¿Cómo se llama el famoso tren de alta velocidad de Japón?</item>
+    </string-array>
+
+    <!-- Preguntas difíciles -->
+    <string-array name="questions_hard">
+        <item>¿Cuál es la teoría que describe la creación del universo?</item>
+        <item>¿En qué año se firmó la Declaración de Independencia de los EE.UU.?</item>
+        <item>¿Qué significa la sigla ADN?</item>
+        <item>¿Cuántos huesos tiene el cuerpo humano adulto?</item>
+        <item>¿Qué científico propuso la teoría de la relatividad?</item>
+        <item>¿Cuál es el elemento químico con el número atómico 79?</item>
+        <item>¿Qué guerra comenzó en 1914?</item>
+        <item>¿Cómo se llama el proceso por el cual las plantas producen su alimento?</item>
+        <item>¿En qué país se encuentra la ciudad de Petra?</item>
+        <item>¿Quién fue el primer emperador de China?</item>
+        <item>¿Cuál es el órgano más grande del cuerpo humano?</item>
+        <item>¿En qué siglo se desarrolló la teoría de la evolución de las especies?</item>
+        <item>¿Quién fue el responsable del descubrimiento de la penicilina?</item>
+        <item>¿En qué año se construyó el muro de Berlín?</item>
+        <item>¿Qué tipo de estrella es el Sol?</item>
+    </string-array>
 </resources>

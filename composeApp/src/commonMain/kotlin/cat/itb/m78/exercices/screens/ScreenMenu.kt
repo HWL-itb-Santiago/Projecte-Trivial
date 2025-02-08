@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Screen1(changeToSettings: () -> Unit)
+fun ScreenMenu(changeToSettings: () -> Unit, changeToGameplay: () -> Unit)
 {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -30,7 +30,7 @@ fun Screen1(changeToSettings: () -> Unit)
         )
         {
             ElevatedButton(
-                onClick = {},
+                onClick = changeToGameplay,
                 modifier = Modifier.size(width = 150.dp, height = 70.dp)
                     .padding(bottom = 25.dp)
             )

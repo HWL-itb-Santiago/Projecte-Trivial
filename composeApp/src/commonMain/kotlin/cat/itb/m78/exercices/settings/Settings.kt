@@ -25,6 +25,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -36,17 +37,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+
 import kotlin.math.roundToInt
 
 @Composable
-fun ScreenSettings(changeScreenToMenu: () -> Unit)
+fun ScreenSettings(changeScreenToMenu: () -> Unit, settingsViewModel: CommonSettings)
 {
-    val settingsVieModel = viewModel{CommonSettings()}
+    val level by settingsViewModel.level.collectAsState()
+    val rounds by settingsViewModel.rounds.collectAsState()
+    val timeRounds by settingsViewModel.timeRounds.collectAsState()
+
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(color = Color.LightGray)
+            .background(color = Color.DarkGray)
     )
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -64,14 +68,13 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit)
                 shape = RectangleShape
             )
             {
-                val mode = when (settingsVieModel.difficultyLevel.value)
+                val mode = when (level)
                 {
                     1 -> "Easy"
                     2 -> "Normal"
-                    3 -> "Hard"
-                    else -> {}
+                    else -> "Hard"
                 }
-                Text("$mode")
+                Text(mode)
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "More options")
                 DropdownMenu(
                     expanded = expanded,
@@ -80,29 +83,29 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit)
                     DropdownMenuItem(
                         text = { Text("Easy") },
                         onClick = {
-                            settingsVieModel.changeDifficulty(1)
+                            settingsViewModel.changeLvl(1)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Normal") },
                         onClick = {
-                            settingsVieModel.changeDifficulty(2)
+                            settingsViewModel.changeLvl(2)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Hard") },
                         onClick = {
-                            settingsVieModel.changeDifficulty(3)
+                            settingsViewModel.changeLvl(3)
                             expanded = false
                         }
                     )
                 }
             }
         }
-        RadioButtonSingleSelection()
-        TimePerRound()
+        RadioButtonSingleSelection(settingsViewModel, rounds)
+        TimePerRound(settingsViewModel, timeRounds)
         Button(
             onClick = changeScreenToMenu
         )
@@ -113,9 +116,9 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit)
 }
 
 @Composable
-fun RadioButtonSingleSelection() {
+fun RadioButtonSingleSelection(settingsViewModel: CommonSettings, rounds: Int) {
     val radioOptions = listOf("5", "10", "15")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(rounds.toString()) }
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(
         modifier = Modifier.selectableGroup()
@@ -131,7 +134,10 @@ fun RadioButtonSingleSelection() {
                 ) {
                     RadioButton(
                         selected = (text == selectedOption),
-                        onClick = { onOptionSelected(text) },
+                        onClick = {
+                            onOptionSelected(text)
+                            settingsViewModel.changeNumberOfRounds(text.toInt())
+                                  },
                     )
                     Text(
                         text = text,
@@ -146,9 +152,9 @@ fun RadioButtonSingleSelection() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePerRound()
+fun TimePerRound(settingsViewModel: CommonSettings, timeRounds: Int)
 {
-    var value by remember { mutableFloatStateOf(.5f) }
+    var value by remember { mutableFloatStateOf(timeRounds.toFloat()) }
     Column (
         modifier = Modifier
             .fillMaxSize(0.25f)
@@ -156,7 +162,8 @@ fun TimePerRound()
     {
         Slider(
             value = value,
-            onValueChange = { value = it },
+            onValueChange = { value = it
+                            settingsViewModel.changeTimePerRound(it.roundToInt())},
             valueRange = 0f..10f,
             thumb = {
                 Box(
@@ -188,7 +195,7 @@ fun TimePerRound()
                         Modifier
                             .fillMaxWidth(1f - fraction)
                             .align(Alignment.CenterEnd)
-                            .height(1.dp)
+                            .height(6.dp)
                             .padding(start = 16.dp)
                             .background(Color.White, CircleShape)
                     )
