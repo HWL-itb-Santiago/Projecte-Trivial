@@ -27,16 +27,20 @@ import cat.itb.m78.exercices.settings.CommonSettings
 import cat.itb.m78.exercices.settings.GamePlayViewModel
 
 @Composable
-fun ScreenGameplay(changeToMenu: () -> Unit, settingsViewModel: CommonSettings)
+fun ScreenGameplay(changeToMenu: () -> Unit)
 {
     val gameplayViewModel = viewModel { GamePlayViewModel() }
     val question by gameplayViewModel.currentQuestion.collectAsState()
 
     val currentTime by gameplayViewModel.currentTime.collectAsState()
-    val maxTime = rememberUpdatedState(settingsViewModel.timeRounds.value)
-
-    LaunchedEffect(maxTime.value) {
-        gameplayViewModel.timer(maxTime.value)
+    var maxTime = 5
+    Gameplay(changeToMenu, {gameplayViewModel.timer(it)}, {gameplayViewModel.printQuestion(it)}, question, currentTime, maxTime)
+}
+@Composable
+fun Gameplay(changeToMenu: () -> Unit, timer: (Int) -> Unit, printQuestion: (Int) -> String, question: Int, currentTime: Float, maxTime: Int)
+{
+    LaunchedEffect(maxTime) {
+        timer(maxTime)
     }
     println(currentTime)
     Box(
@@ -52,31 +56,31 @@ fun ScreenGameplay(changeToMenu: () -> Unit, settingsViewModel: CommonSettings)
         {
             Column()
             {
-                Text(gameplayViewModel.printQuestion(question))
+                Text(printQuestion(question))
             }
             Row {
                 ElevatedButton(
                     onClick = {
-                        gameplayViewModel.nextQuestion()
-                        gameplayViewModel.rebootTimer(maxTime.value)
+//                        gameplayViewModel.nextQuestion()
+//                        gameplayViewModel.rebootTimer(maxTime)
                     },
                     modifier = Modifier.size(width = 150.dp, height = 70.dp)
                         .padding(bottom = 25.dp)
                 )
                 {
-                    Text(gameplayViewModel.printAnswers(question, 0))
+//                    Text(gameplayViewModel.printAnswers(question, 0))
                 }
 
                 ElevatedButton(
                     onClick = {
-                        gameplayViewModel.nextQuestion()
-                        gameplayViewModel.rebootTimer(maxTime.value)
+//                        gameplayViewModel.nextQuestion()
+//                        gameplayViewModel.rebootTimer(maxTime)
                     },
                     modifier = Modifier.size(width = 150.dp, height = 70.dp)
                         .padding(bottom = 25.dp)
                 )
                 {
-                    Text(gameplayViewModel.printAnswers(question, 1))
+//                    Text(gameplayViewModel.printAnswers(question, 1))
                 }
             }
             ElevatedButton(

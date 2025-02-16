@@ -14,3 +14,4 @@ import org.jetbrains.compose.reload.DevelopmentEntryPoint
 internal fun App() = AppTheme {
     NavScreen()
 }
+    

@@ -37,16 +37,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import kotlin.math.roundToInt
 
 @Composable
-fun ScreenSettings(changeScreenToMenu: () -> Unit, settingsViewModel: CommonSettings)
+fun ScreenSettings(changeScreenToMenu: () -> Unit)
 {
+    val settingsViewModel = viewModel { CommonSettings() }
+
     val level by settingsViewModel.level.collectAsState()
     val rounds by settingsViewModel.rounds.collectAsState()
     val timeRounds by settingsViewModel.timeRounds.collectAsState()
 
+    Settings(changeScreenToMenu, {settingsViewModel.changeLvl(it)}, {settingsViewModel.changeNumberOfRounds(it)}, {settingsViewModel.changeTimePerRound(it)}, level, rounds, timeRounds)
+}
+@Composable
+fun Settings(changeScreenToMenu: () -> Unit, changeLvl: (Int) -> Unit, changeNumberOfRounds: (Int) -> Unit, changeTimePerRound: (Int) -> Unit,level: Int, rounds: Int, timeRounds: Int)
+{
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
@@ -83,29 +91,29 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit, settingsViewModel: CommonSett
                     DropdownMenuItem(
                         text = { Text("Easy") },
                         onClick = {
-                            settingsViewModel.changeLvl(1)
+                            changeLvl(1)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Normal") },
                         onClick = {
-                            settingsViewModel.changeLvl(2)
+                            changeLvl(2)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Hard") },
                         onClick = {
-                            settingsViewModel.changeLvl(3)
+                            changeLvl(3)
                             expanded = false
                         }
                     )
                 }
             }
         }
-        RadioButtonSingleSelection(settingsViewModel, rounds)
-        TimePerRound(settingsViewModel, timeRounds)
+        RadioButtonSingleSelection(changeNumberOfRounds, rounds)
+        TimePerRound(changeTimePerRound, timeRounds)
         Button(
             onClick = changeScreenToMenu
         )
@@ -116,7 +124,7 @@ fun ScreenSettings(changeScreenToMenu: () -> Unit, settingsViewModel: CommonSett
 }
 
 @Composable
-fun RadioButtonSingleSelection(settingsViewModel: CommonSettings, rounds: Int) {
+fun RadioButtonSingleSelection(changeNumberOfRounds: (Int) -> Unit, rounds: Int) {
     val radioOptions = listOf("5", "10", "15")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(rounds.toString()) }
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
@@ -136,7 +144,7 @@ fun RadioButtonSingleSelection(settingsViewModel: CommonSettings, rounds: Int) {
                         selected = (text == selectedOption),
                         onClick = {
                             onOptionSelected(text)
-                            settingsViewModel.changeNumberOfRounds(text.toInt())
+                            changeNumberOfRounds(text.toInt())
                                   },
                     )
                     Text(
@@ -152,7 +160,7 @@ fun RadioButtonSingleSelection(settingsViewModel: CommonSettings, rounds: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePerRound(settingsViewModel: CommonSettings, timeRounds: Int)
+fun TimePerRound(changeTimePerRound: (Int) -> Unit, timeRounds: Int)
 {
     var value by remember { mutableFloatStateOf(timeRounds.toFloat()) }
     Column (
@@ -163,7 +171,7 @@ fun TimePerRound(settingsViewModel: CommonSettings, timeRounds: Int)
         Slider(
             value = value,
             onValueChange = { value = it
-                            settingsViewModel.changeTimePerRound(it.roundToInt())},
+                            changeTimePerRound(it.roundToInt())},
             valueRange = 0f..10f,
             thumb = {
                 Box(

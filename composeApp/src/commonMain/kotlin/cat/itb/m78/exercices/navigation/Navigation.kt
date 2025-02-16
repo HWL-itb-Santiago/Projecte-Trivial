@@ -40,11 +40,11 @@ fun NavScreen()
         }
         composable<Destination.ScreenSettings>
         {
-            ScreenSettings ({navController.navigate(Destination.ScreenMenu)}, settingsViewModel)
+            ScreenSettings { navController.navigate(Destination.ScreenMenu) }
         }
         composable<Destination.ScreenGamePlay>
         {
-            ScreenGameplay({navController.navigate(Destination.ScreenMenu)}, settingsViewModel)
+            ScreenGameplay({navController.navigate(Destination.ScreenMenu)})
         }
     }
 }
