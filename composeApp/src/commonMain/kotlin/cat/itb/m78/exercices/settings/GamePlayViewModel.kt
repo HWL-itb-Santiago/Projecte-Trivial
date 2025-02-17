@@ -1,5 +1,6 @@
 package cat.itb.m78.exercices.settings
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -12,13 +13,20 @@ import kotlinx.coroutines.launch
 
 class GamePlayViewModel : ViewModel()
 {
-    private val easyQuestionList = listOf(
+    private var easyQuestionList = listOf(
         Question("¿Cuántos lados tiene un triángulo?", listOf("1","2","3","4"), 2),
         Question("¿Cuál es el color visible por el ojo humano del sol?", listOf("Blanco", "Azul", "Morado","Gris"), 3),
         Question("¿Cuántos continentes hay en el mundo?", listOf("1","2.5","10","5"), 3),
         Question("¿En qué continente se encuentra Brasil?", listOf("Europa","Portugal","Latinoamerica","Asia"), 2),
         Question("¿Qué animal es conocido como el rey de la selva?", listOf("Simba","Leon","Hiena","Ballena"), 1)
     )
+    init {
+        easyQuestionList = easyQuestionList.shuffled()
+    }
+
+    private var _score = MutableStateFlow(0)
+    var score: StateFlow<Int> = _score.asStateFlow()
+
 
     private var timerJob: Job? = null
 
@@ -33,23 +41,32 @@ class GamePlayViewModel : ViewModel()
         return easyQuestionList[currentRound].questionName
     }
 
-    fun printAnswers(currentRound: Int, index: Int): String
+    fun printAnswers(index: Int): String
     {
-        return easyQuestionList[currentRound].questionAnswers[index]
+        return easyQuestionList[currentQuestion.value].questionAnswers[index]
     }
 
-    fun nextQuestion()
+    fun nextQuestion(playerAnswer: Int)
     {
-        _currentTime.value = 0f
-        _currentQuestion.value += 1
+        validatedAnswer(playerAnswer)
+        if (currentQuestion.value >= easyQuestionList.size - 1)
+        {
+            //TO DO
+        }
+        else
+        {
+            _currentTime.value = 0f
+            _currentQuestion.value += 1
+        }
     }
+
     fun timer(maxTime: Int)
     {
         timerJob?.cancel()
         timerJob = viewModelScope.launch(Dispatchers.Main)
         {
             for (i in 0 ..maxTime) {
-                _currentTime.value = i.toFloat() / maxTime
+                _currentTime.value = (i.toFloat() / maxTime)
                 delay(1000)
             }
         }
@@ -59,6 +76,14 @@ class GamePlayViewModel : ViewModel()
     {
         timerJob?.cancel()
         timer(maxTime)
+    }
+
+    private fun validatedAnswer(playerAnswer: Int)
+    {
+        if (easyQuestionList[currentQuestion.value].answer == playerAnswer)
+        {
+            _score.value += 10
+        }
     }
 }
 

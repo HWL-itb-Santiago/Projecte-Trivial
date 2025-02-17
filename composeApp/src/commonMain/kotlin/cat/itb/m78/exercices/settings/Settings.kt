@@ -42,19 +42,32 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun ScreenSettings(changeScreenToMenu: () -> Unit)
+fun ScreenSettings(changeScreenToMenu: () -> Unit, settingsViewModel: SettingsViewModel)
 {
-    val settingsViewModel = viewModel { CommonSettings() }
-
-    val level by settingsViewModel.level.collectAsState()
+    val level by settingsViewModel.difficulty.collectAsState()
     val rounds by settingsViewModel.rounds.collectAsState()
     val timeRounds by settingsViewModel.timeRounds.collectAsState()
 
-    Settings(changeScreenToMenu, {settingsViewModel.changeLvl(it)}, {settingsViewModel.changeNumberOfRounds(it)}, {settingsViewModel.changeTimePerRound(it)}, level, rounds, timeRounds)
+    ScreenSettings(
+        changeScreenToMenu,
+        {settingsViewModel.setDifficulty(it)},
+        {settingsViewModel.setRounds(it)},
+        {settingsViewModel.setTimeRounds(it)},
+        level,
+        rounds,
+        timeRounds,
+    )
 }
 @Composable
-fun Settings(changeScreenToMenu: () -> Unit, changeLvl: (Int) -> Unit, changeNumberOfRounds: (Int) -> Unit, changeTimePerRound: (Int) -> Unit,level: Int, rounds: Int, timeRounds: Int)
+fun ScreenSettings(changeScreenToMenu: () -> Unit,
+                   setDifficulty: (String) -> Unit,
+                   setRounds: (Int) -> Unit,
+                   setTimeRounds: (Int) -> Unit,
+                   level: TrivialSubject,
+                   rounds: Int,
+                   timeRounds: Int)
 {
+    val difficultyList = listOf("Easy", "Normal", "Hard")
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize()
@@ -76,44 +89,27 @@ fun Settings(changeScreenToMenu: () -> Unit, changeLvl: (Int) -> Unit, changeNum
                 shape = RectangleShape
             )
             {
-                val mode = when (level)
-                {
-                    1 -> "Easy"
-                    2 -> "Normal"
-                    else -> "Hard"
-                }
-                Text(mode)
+                Text(level.name)
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "More options")
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    DropdownMenuItem(
-                        text = { Text("Easy") },
-                        onClick = {
-                            changeLvl(1)
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Normal") },
-                        onClick = {
-                            changeLvl(2)
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Hard") },
-                        onClick = {
-                            changeLvl(3)
-                            expanded = false
-                        }
-                    )
+                    difficultyList.forEach() {
+                        item ->
+                        DropdownMenuItem(
+                            text = { Text(item) },
+                            onClick = {
+                                setDifficulty(item)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
-        RadioButtonSingleSelection(changeNumberOfRounds, rounds)
-        TimePerRound(changeTimePerRound, timeRounds)
+        RadioButtonSingleSelection(setRounds, rounds)
+        TimePerRound(setTimeRounds, timeRounds)
         Button(
             onClick = changeScreenToMenu
         )
@@ -124,7 +120,7 @@ fun Settings(changeScreenToMenu: () -> Unit, changeLvl: (Int) -> Unit, changeNum
 }
 
 @Composable
-fun RadioButtonSingleSelection(changeNumberOfRounds: (Int) -> Unit, rounds: Int) {
+fun RadioButtonSingleSelection(setRounds: (Int) -> Unit, rounds: Int) {
     val radioOptions = listOf("5", "10", "15")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(rounds.toString()) }
     // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
@@ -144,7 +140,7 @@ fun RadioButtonSingleSelection(changeNumberOfRounds: (Int) -> Unit, rounds: Int)
                         selected = (text == selectedOption),
                         onClick = {
                             onOptionSelected(text)
-                            changeNumberOfRounds(text.toInt())
+                            setRounds(text.toInt())
                                   },
                     )
                     Text(
@@ -160,7 +156,7 @@ fun RadioButtonSingleSelection(changeNumberOfRounds: (Int) -> Unit, rounds: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePerRound(changeTimePerRound: (Int) -> Unit, timeRounds: Int)
+fun TimePerRound(setTimeRounds: (Int) -> Unit, timeRounds: Int)
 {
     var value by remember { mutableFloatStateOf(timeRounds.toFloat()) }
     Column (
@@ -170,8 +166,10 @@ fun TimePerRound(changeTimePerRound: (Int) -> Unit, timeRounds: Int)
     {
         Slider(
             value = value,
-            onValueChange = { value = it
-                            changeTimePerRound(it.roundToInt())},
+            onValueChange = {
+                value = it
+                setTimeRounds(it.roundToInt())
+            },
             valueRange = 0f..10f,
             thumb = {
                 Box(

@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import cat.itb.m78.exercices.screens.ScreenGameplay
 import cat.itb.m78.exercices.screens.ScreenMenu
-import cat.itb.m78.exercices.settings.CommonSettings
+import cat.itb.m78.exercices.settings.SettingsViewModel
 import cat.itb.m78.exercices.settings.ScreenSettings
 import kotlinx.serialization.Serializable
 
@@ -25,7 +25,7 @@ object Destination {
 @Composable
 fun NavScreen()
 {
-    val settingsViewModel = viewModel { CommonSettings() }
+    val settingsViewModel = viewModel { SettingsViewModel() }
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -34,17 +34,23 @@ fun NavScreen()
     {
         composable<Destination.ScreenMenu>
         {
-            ScreenMenu (
-                {navController.navigate(Destination.ScreenSettings)},
-                {navController.navigate(Destination.ScreenGamePlay)})
+            ScreenMenu(
+                { navController.navigate(Destination.ScreenSettings) },
+                { navController.navigate(Destination.ScreenGamePlay) })
         }
         composable<Destination.ScreenSettings>
         {
-            ScreenSettings { navController.navigate(Destination.ScreenMenu) }
+            ScreenSettings(
+                { navController.navigate(Destination.ScreenMenu) },
+                settingsViewModel
+            )
         }
         composable<Destination.ScreenGamePlay>
         {
-            ScreenGameplay({navController.navigate(Destination.ScreenMenu)})
+            ScreenGameplay(
+                { navController.navigate(Destination.ScreenMenu) },
+                settingsViewModel
+            )
         }
     }
 }
