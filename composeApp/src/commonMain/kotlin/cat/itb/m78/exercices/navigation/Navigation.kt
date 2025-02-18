@@ -1,14 +1,13 @@
 package cat.itb.m78.exercices.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import cat.itb.m78.exercices.screens.ScreenGameplay
 import cat.itb.m78.exercices.screens.ScreenMenu
-import cat.itb.m78.exercices.settings.SettingsViewModel
-import cat.itb.m78.exercices.settings.ScreenSettings
+import cat.itb.m78.exercices.screens.ScreenScore
+import cat.itb.m78.exercices.screens.ScreenSettings
 import kotlinx.serialization.Serializable
 
 object Destination {
@@ -19,13 +18,12 @@ object Destination {
     @Serializable
     data object ScreenGamePlay
     @Serializable
-    data class Screen3(val message: String)
+    data object ScreenScore
 }
 
 @Composable
 fun NavScreen()
 {
-    val settingsViewModel = viewModel { SettingsViewModel() }
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -41,15 +39,20 @@ fun NavScreen()
         composable<Destination.ScreenSettings>
         {
             ScreenSettings(
-                { navController.navigate(Destination.ScreenMenu) },
-                settingsViewModel
+                { navController.navigate(Destination.ScreenMenu) }
             )
         }
         composable<Destination.ScreenGamePlay>
         {
             ScreenGameplay(
                 { navController.navigate(Destination.ScreenMenu) },
-                settingsViewModel
+                { navController.navigate(Destination.ScreenScore) }
+            )
+        }
+        composable<Destination.ScreenScore>
+        {
+            ScreenScore(
+                { navController.navigate(Destination.ScreenMenu) }
             )
         }
     }
